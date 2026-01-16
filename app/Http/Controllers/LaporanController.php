@@ -106,46 +106,47 @@ class LaporanController extends Controller
     }
 
 
-    public function cetak(Request $request)
-    {
-        $userLogin = auth()->user()->roles;
-        $userId = auth()->user()->id;
-        $mulai = $request->input('tgl_mulai');
-        $selesai = $request->input('tgl_selesai');
+ public function cetak(Request $request)
+{
+    $userLogin = auth()->user()->roles;
+    $userId = auth()->user()->id;
+    $mulai = $request->input('tgl_mulai');
+    $selesai = $request->input('tgl_selesai');
 
-        if($userLogin === 'kepalausaha'){
-            $userId = auth()->user()->id;
-
-            $laporans = Barang::where('user_id', $userId)
-                ->when($mulai && $selesai, function ($query) use ($mulai, $selesai) {
-                    return $query->whereBetween('tanggal', [$mulai, $selesai]);
-                })
-                ->orderBy('id', 'asc')
-                ->get();
-            // dd($laporans);
-        } else {
-            $laporans = Barang::when($mulai && $selesai, function ($query) use ($mulai, $selesai) {
+    // 1. Ambil data laporan dengan filter yang sudah ada
+    if($userLogin === 'kepalausaha'){
+        $laporans = Barang::where('user_id', $userId)
+            ->when($mulai && $selesai, function ($query) use ($mulai, $selesai) {
                 return $query->whereBetween('tanggal', [$mulai, $selesai]);
             })
-                ->orderBy('tanggal')
-                ->get();
-        } 
+            ->orderBy('id', 'asc')
+            ->get();
+    } else {
+        $laporans = Barang::when($mulai && $selesai, function ($query) use ($mulai, $selesai) {
+            return $query->whereBetween('tanggal', [$mulai, $selesai]);
+        })
+        ->orderBy('tanggal')
+        ->get();
+    } 
 
+    // 2. Gunakan koleksi $laporans untuk menghitung total agar filter tanggal ikut terhitung
+    $totalFiltered = $laporans->sum('harga');
 
-        $logoInstansiPath = storage_path('app/public/logo-instansi/logo.png');
-        $logoInstansi = base64_encode(file_get_contents($logoInstansiPath));
+    // 3. Penanganan Logo
+    $logoInstansiPath = public_path('assets/img/header.png'); // Sesuai diskusi sebelumnya
+    $logoInstansi = base64_encode(file_get_contents($logoInstansiPath));
 
+    $pdf = PDF::loadView('laporan.cetak', [
+        'laporans'      => $laporans,
+        'logoInstansi'  => $logoInstansi,
+        'totalHarga'    => $totalFiltered, // Gunakan hasil jumlah dari data yang sudah difilter
+        'totalHargaUsaha' => $totalFiltered, // Sama saja karena $laporans sudah difilter sesuai role
+        'tgl_mulai'     => $mulai,
+        'tgl_selesai'   => $selesai
+    ]);
 
-        // dd($laporans);
-        $pdf = new Dompdf();
-        $pdf = PDF::loadView('laporan.cetak', ([
-            'laporans'      => $laporans,
-            'logoInstansi'  => $logoInstansi,
-            'totalHarga'    => Barang::sum('harga'),
-            'totalHargaUsaha' => Barang::where('user_id', auth()->user()->id)->sum('harga')
-        ]));
-        return $pdf->stream('laporan.pdf');
-    }
+    return $pdf->stream('laporan.pdf');
+}
     
   
 }

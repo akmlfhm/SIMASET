@@ -193,7 +193,7 @@ $validated['kode_barang'] = 'PWM-' . str_pad($nomorUrut, 3, '0', STR_PAD_LEFT) .
         $barang = Barang::find($id->id);
 
         $qrCodePath = storage_path('app/public/qrcode-barang/' . $barang->kode_barang . '.png');
-        $logoInstansiPath = storage_path('app/public/logo-instansi/logo.png');
+        $logoInstansiPath = public_path('loginassets/img/backgrounds/logo-muhammadiyah.png');
 
         $qrCode = base64_encode(file_get_contents($qrCodePath));
         $logoInstansi = base64_encode(file_get_contents($logoInstansiPath));
@@ -206,5 +206,6 @@ $validated['kode_barang'] = 'PWM-' . str_pad($nomorUrut, 3, '0', STR_PAD_LEFT) .
         ]);
 
         return $pdf->stream('label.pdf');
+        $customPaper = [0, 0, 283.46, 141.73];
     }
 }
