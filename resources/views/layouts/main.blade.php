@@ -162,57 +162,48 @@
 					</li>
 
 					<li class="sidebar-header">
-						Pengadaan Barang
-					</li>
-					<li class="sidebar-item">
-						<a class="sidebar-link" href="/permintaan/">
-							<i class="bi bi-card-list"></i> <span class="align-middle">Permintaan</span>
-						</a>
-					</li>
+					Laporan
+				</li>
+				<li class="sidebar-item">
+					<a class="sidebar-link" href="/statistik/">
+						<i class="bi bi-clipboard-data"></i> <span class="align-middle">Statistik</span>
+					</a>
+				</li>
+				<li class="sidebar-item">
+					<a class="sidebar-link" href="/laporan/">
+						<i class="bi bi-journals"></i> <span class="align-middle">Cetak Laporan</span>
+					</a>
+				</li>
+				<li class="sidebar-item">
+					<a class="sidebar-link" href="/label/">
+						<i class="bi bi-qr-code"></i> <span class="align-middle">Cetak Label</span>
+					</a>
+				</li>
 
-					<li class="sidebar-header">
-						Laporan
-					</li>
-					<li class="sidebar-item">
-						<a class="sidebar-link" href="/statistik/">
-							<i class="bi bi-clipboard-data"></i> <span class="align-middle">Statistik</span>
-						</a>
-					</li>
-					<li class="sidebar-item">
-						<a class="sidebar-link" href="/laporan/">
-							<i class="bi bi-journals"></i> <span class="align-middle">Cetak Laporan</span>
-						</a>
-					</li>
-					<li class="sidebar-item">
-						<a class="sidebar-link" href="/label/">
-							<i class="bi bi-qr-code"></i> <span class="align-middle">Cetak Label</span>
-						</a>
-					</li>
+				<li class="sidebar-header">
+					Riwayat
+				</li>
+				<li class="sidebar-item">
+					<a class="sidebar-link" href="/penghapusan-aset/">
+						<i class="bi bi-clock-history"></i> <span class="align-middle">Penghapusan Aset</span>
+					</a>
+				</li>
 
-					<li class="sidebar-header">
-						Riwayat
-					</li>
-					<li class="sidebar-item">
-						<a class="sidebar-link" href="/penghapusan-aset/">
-							<i class="bi bi-clock-history"></i> <span class="align-middle">Penghapusan Aset</span>
-						</a>
-					</li>
+				<li class="sidebar-header">
+					Pengaturan
+				</li>
+				<li class="sidebar-item">
+					<a class="sidebar-link" href="/reset-password/">
+						<i class="bi bi-unlock"></i> <span class="align-middle">Reset Password</span>
+					</a>
+				</li>
 
-					<li class="sidebar-header">
-						Pengaturan
-					</li>
-					<li class="sidebar-item">
-						<a class="sidebar-link" href="/reset-password/">
-							<i class="bi bi-unlock"></i> <span class="align-middle">Reset Password</span>
-						</a>
-					</li>
-	
-					@endif
+				@endif
 
 
-					{{-- Menu untuk roles Kepala Unit Usaha --}}
-					@if($users->roles === 'kepalausaha');
-					<li class="sidebar-item">
+				{{-- Menu untuk roles Kepala Unit Usaha --}}
+				@if($users->roles === 'kepalausaha');
+				<li class="sidebar-item">
 						<a class="sidebar-link" href="/home">
 							<i class="bi bi-speedometer2"></i> <span class="align-middle">Dashboard</span>
 						</a>

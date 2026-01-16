@@ -1,48 +1,48 @@
 @extends('layouts.main')
 
 @section('content')
-    <h1 class="h3 mb-4">Statistik Aset Bumdes </h1>
-    
+<style>
+    .chart-container { position: relative; height: 300px; width: 100%; }
+    .card { border-radius: 15px; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: 0.3s; }
+    .card:hover { box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
+    .badge-label { width: 12px; height: 12px; border-radius: 3px; display: inline-block; margin-right: 8px; }
+</style>
+
+<div class="container-fluid p-0">
+    <h1 class="h3 mb-4 fw-bold text-dark">Ringkasan Statistik Aset</h1>
+
     <div class="row">
-        <div class="col">
-            <div class="card">
+        <div class="col-xl-8 col-lg-7">
+            <div class="card mb-4">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0 fw-bold">Tren Penambahan Aset Tahunan</h5>
+                    <span class="badge bg-soft-success text-success">{{ date('Y') }}</span>
+                </div>
                 <div class="card-body">
-                    <div class="card flex-fill w-100">
-                        <div class="card-header">
-                            <h5 class="card-title mb-0">Grafik Penambahan Aset Tahunan</h5>
-                        </div>
-                        <div class="card-body py-3">
-                            <div class="chart chart-sm">
-                                <canvas id="chartjs-dashboard-line"></canvas>
-                            </div>
-                        </div>
+                    <div class="chart-container">
+                        <canvas id="chartjs-dashboard-line"></canvas>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    {{-- Pie Statistik Kategori --}}
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Kategori Aset</h5>
+        <div class="col-xl-4 col-lg-5">
+            <div class="card mb-4">
+                <div class="card-header bg-white py-3">
+                    <h5 class="card-title mb-0 fw-bold">Sebaran Per Lokasi</h5>
                 </div>
-                <div class="card-body d-flex">
-                    <div class="align-self-center w-100">
-                        <div class="py-3">
-                            <div class="chart chart-xs">
-                                <canvas id="chartjs-dashboard-pie"></canvas>
-                            </div>
-                        </div>
-
-                        <table class="table mb-0">
+                <div class="card-body">
+                    <div style="height: 200px;">
+                        <canvas id="chartjs-dashboard-pie-lokasi"></canvas>
+                    </div>
+                    <div class="mt-4" style="max-height: 120px; overflow-y: auto;">
+                        <table class="table table-sm table-borderless">
                             <tbody>
-                                @foreach ($kategori as $k)
-                                    <tr>
-                                        <td>{{ $k->nama }}</td>
-                                    </tr>
+                                @foreach ($lokasi as $l)
+                                <tr>
+                                    <td><i class="align-middle text-success me-2" data-feather="map-pin"></i> {{ $l->nama_lokasi }}</td>
+                                    <td class="text-end fw-bold">{{ $l->total }} <span class="text-muted small">Aset</span></td>
+                                </tr>
                                 @endforeach
                             </tbody>
                         </table>
@@ -50,248 +50,125 @@
                 </div>
             </div>
         </div>
+    </div>
 
-            {{-- Pie Statistik Lokasi --}}
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Lokasi Sebaran Aset</h5>
+    <div class="row">
+        <div class="col-md-5">
+            <div class="card mb-4">
+                <div class="card-header bg-white py-3">
+                    <h5 class="card-title mb-0 fw-bold">Kategori Aset</h5>
+                </div>
+                <div class="card-body">
+                    <div style="height: 220px;">
+                        <canvas id="chartjs-dashboard-pie"></canvas>
                     </div>
-                    <div class="card-body d-flex">
-                        <div class="align-self-center w-100">
-                            <div class="py-3">
-                                <div class="chart chart-xs">
-                                    <canvas id="chartjs-dashboard-pie-lokasi"></canvas>
-                                </div>
+                    <div class="mt-3">
+                        <div class="row small g-2">
+                            @foreach ($kategori as $k)
+                            <div class="col-6 text-muted">
+                                <i class="align-middle me-1" data-feather="tag" style="width:12px"></i> {{ $k->nama }}
                             </div>
-    
-                            <table class="table mb-0">
-                                <tbody>
-                                    @foreach ($lokasi as $l)
-                                        <tr>
-                                            <td>{{ $l->nama_lokasi }}</td>
-                                            <td class="text-end">{{ $l->total}} aset</td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                            @endforeach
                         </div>
                     </div>
                 </div>
             </div>
-    </div>
+        </div>
 
-	<div class="row">
-		<div class="col">
-			<div class="card">
+		<div class="col-md-7">
+			<div class="card mb-4"> <div class="card-header bg-white py-3">
+					<h5 class="card-title mb-0 fw-bold text-dark">Nilai Valuasi Aset (IDR)</h5>
+				</div>
 				<div class="card-body">
-					<div class="card-header">
-						<h5 class="card-title">Grafik Total Harga Aset</h5>
-						
-					</div>
-					<div class="card-body">
-						<div class="chart">
-							<canvas id="chartjs-line"></canvas>
-						</div>
+					<div class="chart-container" style="height: 280px;">
+						<canvas id="chartjs-line"></canvas>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
+    </div>
+</div>
 
+{{-- Scripts tetap menggunakan logika Anda namun dengan penyesuaian warna --}}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+		const primaryColor = "#3b7ddd"; // Ini warna biru default AdminKit
+		const successColor = "#28a745";
+        const warningColor = "#ffc107";
+        const dangerColor = "#dc3545";
+        const infoColor = "#17a2b8";
 
+        // LINE CHART: Penambahan Aset
+        new Chart(document.getElementById("chartjs-dashboard-line"), {
+            type: "{{ $chart->type }}",
+            data: {
+                labels: {!! json_encode($chart->labels) !!},
+                datasets: [{
+                    label: "Jumlah Aset",
+                    data: {!! json_encode($chart->data) !!},
+                    fill: true,
+                    backgroundColor: "rgba(0, 125, 67, 0.1)",
+                    borderColor: primaryColor,
+                    tension: 0.4,
+                    pointRadius: 4
+                }]
+            },
+            options: { maintainAspectRatio: false, plugins: { legend: { display: false } } }
+        });
 
-    
-    
-    
-    {{-- Grafik Aset --}}
-	<script>
-		document.addEventListener("DOMContentLoaded", function() {
-			var ctx = document.getElementById("chartjs-dashboard-line").getContext("2d");
-			var gradient = ctx.createLinearGradient(0, 0, 0, 225);
-			gradient.addColorStop(0, "rgba(215, 227, 244, 1)");
-			gradient.addColorStop(1, "rgba(215, 227, 244, 0)");
-			// Line chart
-			new Chart(document.getElementById("chartjs-dashboard-line"), {
-				type: "{{ $chart->type }}",
-				data: {
-					labels: {!! json_encode($chart->labels) !!},
-					datasets: [{
-						label: "Data",
-						data: {!! json_encode($chart->data) !!},
-						fill: true,
-						backgroundColor: gradient,
-						borderColor: window.theme.primary,
-					}]
-				},
-				options: {
-					maintainAspectRatio: false,
-					legend: {
-						display: false
-					},
-					tooltips: {
-						intersect: false
-					},
-					hover: {
-						intersect: true
-					},
-					plugins: {
-						filler: {
-							propagate: false
-						}
-					},
-					scales: {
-						xAxes: [{
-							reverse: true,
-							gridLines: {
-								color: "rgba(0,0,0,0.0)"
-							}
-						}],
-						yAxes: [{
-							ticks: {
-								stepSize: 1000
-							},
-							display: true,
-							borderDash: [3, 3],
-							gridLines: {
-								color: "rgba(0,0,0,0.0)"
-							}
-						}]
-					}
-				}
-			});
-		});
-	</script>
+        // PIE CHART: Kategori
+        new Chart(document.getElementById("chartjs-dashboard-pie"), {
+            type: "doughnut", // Mengubah pie menjadi doughnut agar lebih modern
+            data: {
+                labels: {!! json_encode($pieChart->labels) !!},
+                datasets: [{
+                    data: {!! json_encode($pieChart->data) !!},
+                    backgroundColor: [primaryColor, warningColor, dangerColor, infoColor, "#6c757d"],
+                    borderWidth: 0
+                }]
+            },
+            options: { cutout: "70%", maintainAspectRatio: false, plugins: { legend: { display: false } } }
+        });
 
-    {{-- Pie Statistik Kategori--}}
-    <script>
-		document.addEventListener("DOMContentLoaded", function() {
-			// Pie chart
-			new Chart(document.getElementById("chartjs-dashboard-pie"), {
-				type: "pie",
-				data: {
-					labels: {!! json_encode($pieChart->labels) !!},
-					datasets: [{
-						data: {!! json_encode($pieChart->data) !!},
-						backgroundColor: [
-							window.theme.primary,
-							window.theme.warning,
-							window.theme.danger,
-							window.theme.success,
-							window.theme.secondary,
-						],
-						borderWidth: 5
-					}]
-				},
-				options: {
-					responsive: !window.MSInputMethodContext,
-					maintainAspectRatio: false,
-					legend: {
-						display: false
-					},
-					cutoutPercentage: 75
-				}
-			});
-		});
-	</script>
+        // PIE CHART: Lokasi
+        new Chart(document.getElementById("chartjs-dashboard-pie-lokasi"), {
+            type: "pie",
+            data: {
+                labels: {!! json_encode($lokasiChart->labels) !!},
+                datasets: [{
+                    data: {!! json_encode($lokasiChart->data) !!},
+                    backgroundColor: [successColor, "#20c997", primaryColor, "#82d399"],
+                    borderWidth: 2,
+                    borderColor: "#fff"
+                }]
+            },
+            options: { maintainAspectRatio: false, plugins: { legend: { display: false } } }
+        });
 
-     {{-- Pie Statistik Lokasi--}}
-     <script>
-		document.addEventListener("DOMContentLoaded", function() {
-			// Pie chart
-			new Chart(document.getElementById("chartjs-dashboard-pie-lokasi"), {
-				type: "pie",
-				data: {
-					labels: {!! json_encode($lokasiChart->labels) !!},
-					datasets: [{
-						data: {!! json_encode($lokasiChart->data) !!},
-						backgroundColor: [
-                            window.theme.success,
-							window.theme.secondary,
-							window.theme.primary,
-							window.theme.warning,
-							window.theme.danger,
-						],
-						borderWidth: 5
-					}]
-				},
-				options: {
-					responsive: !window.MSInputMethodContext,
-					maintainAspectRatio: false,
-					legend: {
-						display: false
-					},
-					cutoutPercentage: 75
-				}
-			});
-		});
-	</script>
-
-
-
-	{{-- Total Harga Statistik --}}
-	<script>
-		document.addEventListener("DOMContentLoaded", function() {
-			// Line chart
-			new Chart(document.getElementById("chartjs-line"), {
-				type: "line",
-				data: {
-					labels: {!! json_encode($keuanganChart->labels) !!},
-					datasets: [{
-						data :  {!! json_encode($keuanganChart->data) !!},
-						fill: true,
-						borderColor: window.theme.primary,
-					}]
-				},
-				options: {
-					maintainAspectRatio: false,
-					legend: {
-						display: false
-					},
-					tooltips: {
-						intersect: false,
-						callbacks: {
-							label: function(tooltipItem, data) {
-								var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-								return 'Rp ' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-							}
-						}
-					},
-					hover: {
-						intersect: true
-					},
-					plugins: {
-						filler: {
-							propagate: false
-						}
-					},
-					scales: {
-						xAxes: [{
-							reverse: true,
-							gridLines: {
-								color: "rgba(0,0,0,0.05)"
-							}
-						}],
-						yAxes: [{
-							ticks: {
-								stepSize: 500,
-								callback: function(value, index, values){
-									return 'Rp ' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-								},
-							},
-							display: true,
-							borderDash: [5, 5],
-							gridLines: {
-								color: "rgba(0,0,0,0)",
-								fontColor: "#fff"
-							}
-						}]
-					}
-				}
-			});
-		});
-	</script>
-	
-		
-
+        // LINE CHART: Nilai Harga (Warna Putih karena Background Hijau)
+        new Chart(document.getElementById("chartjs-line"), {
+            type: "line",
+            data: {
+                labels: {!! json_encode($keuanganChart->labels) !!},
+                datasets: [{
+                    label: "Nilai Aset",
+                    data: {!! json_encode($keuanganChart->data) !!},
+                    fill: false,
+                    borderColor: "#ffffff",
+                    pointBackgroundColor: "#ffffff",
+                    borderWidth: 3,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { ticks: { color: "#fff" }, grid: { color: "rgba(255,255,255,0.1)" } },
+                    x: { ticks: { color: "#fff" }, grid: { display: false } }
+                }
+            }
+        });
+    });
+</script>
 @endsection

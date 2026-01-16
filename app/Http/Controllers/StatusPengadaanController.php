@@ -97,6 +97,11 @@ class StatusPengadaanController extends Controller
 
     public function setPersetujuan($id)
     {
+        // Validasi role sekretaris
+        if(auth()->user()->roles !== 'sekretaris'){
+            abort(403, 'Hanya Sekretaris yang dapat menyetujui pengadaan.');
+        }
+
         Statuspengadaan::where('id', $id)
             ->update([
                 'status'  => 'disetujui',
@@ -108,6 +113,11 @@ class StatusPengadaanController extends Controller
 
     public function setPenolakan($id)
     { 
+        // Validasi role sekretaris
+        if(auth()->user()->roles !== 'sekretaris'){
+            abort(403, 'Hanya Sekretaris yang dapat menolak pengadaan.');
+        }
+
         Statuspengadaan::where('id', $id)
             ->update([
                 'status' => 'ditolak',

@@ -36,7 +36,7 @@
                                             <a href="/permintaan/{{ $permintaan->id }}" class="btn btn-secondary d-inline mb-2"><i class="bi bi-eye-fill"></i></a>
                                         </td>
 
-                                        @if (auth()->user()->roles === 'direktur')
+                                        @if (auth()->user()->roles === 'sekretaris')
                                             <td>
                                                 @if ($permintaan->status == 'pending')
                                                 <form id="form-{{ $permintaan->id }}"  action="/permintaan/{{ $permintaan->id }}/setuju" method="POST" class="d-inline">
@@ -52,7 +52,12 @@
                                                 @else
                                                     <a href="/permintaan/{{ $permintaan->id }}/edit" class="btn btn-primary d-inline mb-2"><i class="bi bi-plus-square-fill"></i> Kirim Catatan</a>
                                                 @endif
+                                                
                                             </td>
+                                        @elseif (auth()->user()->roles === 'kepalausaha')
+                                           <td>
+                                                <a class="btn btn-primary" href="/permintaan/laporan-pengadaan/{{ $permintaan->id }}" target="_blank" role="button"><i class="bi bi-printer"></i>&nbsp; Cetak</a>                    
+                                           </td>
                                         @else
                                            <td>
                                                 <a class="btn btn-primary" href="/permintaan/laporan-pengadaan/{{ $permintaan->id }}" target="_blank" role="button"><i class="bi bi-printer"></i>&nbsp; Cetak</a>                    
