@@ -19,18 +19,29 @@ class StatusPengadaanController extends Controller
      */
     public function index()
     {
+        $currentUser = Auth::user();
+        
+        $query = DB::table('pengadaans')
+                        ->leftJoin('statuspengadaans', 'pengadaans.id', '=', 'statuspengadaans.pengadaan_id')
+                        ->select('pengadaans.*', 'statuspengadaans.status')
+                        ->whereIn('pengadaans.id', function ($subquery) {
+                            $subquery->select(DB::raw('MAX(id)'))
+                                ->from('pengadaans')
+                                ->groupBy('nama_pengadaan');
+                        });
+
+        // Filter berdasarkan role user
+        if ($currentUser->roles !== 'admin') {
+            // Jika user bukan admin, hanya tampilkan data milik mereka sendiri
+            $query->where('pengadaans.user_id', $currentUser->id);
+        }
+        // Jika admin, tampilkan semua data
+
+        $permintaans = $query->orderBy('created_at', 'desc')->get();
+
         return view('permintaan.index', [
-            'users'       => Auth::user(),
-            'permintaans' => DB::table('pengadaans')
-                                ->leftJoin('statuspengadaans', 'pengadaans.id', '=', 'statuspengadaans.pengadaan_id')
-                                ->select('pengadaans.*', 'statuspengadaans.status')
-                                ->whereIn('pengadaans.id', function ($query) {
-                                    $query->select(DB::raw('MAX(id)'))
-                                        ->from('pengadaans')
-                                        ->groupBy('nama_pengadaan');
-                                })
-                                ->orderBy('created_at', 'desc')
-                                ->get()
+            'users'       => $currentUser,
+            'permintaans' => $permintaans
         ]);
     }
 
@@ -55,9 +66,18 @@ class StatusPengadaanController extends Controller
      */
     public function show($id)
     {
+        $pengadaan = Pengadaan::find($id);
+        $currentUser = Auth::user();
+
+        // Cek otorisasi: hanya user pemilik atau admin yang bisa melihat
+        if ($currentUser->roles !== 'admin' && $pengadaan->user_id !== $currentUser->id) {
+            Alert::error('Akses Ditolak', 'Anda tidak memiliki akses untuk melihat data ini');
+            return redirect('/permintaan');
+        }
+
         return view('permintaan.show', [
-            'users'     => Auth::user(),
-            'pengadaan' => Pengadaan::find($id),
+            'users'     => $currentUser,
+            'pengadaan' => $pengadaan,
             'status'    => Statuspengadaan::find($id)
         ]);
     }
@@ -67,9 +87,19 @@ class StatusPengadaanController extends Controller
      */
     public function edit(Statuspengadaan $statuspengadaan, $id)
     {
+        $statusData = Statuspengadaan::findOrFail($id);
+        $pengadaan = Pengadaan::find($statusData->pengadaan_id);
+        $currentUser = Auth::user();
+
+        // Cek otorisasi: hanya user pemilik atau admin yang bisa edit
+        if ($currentUser->roles !== 'admin' && $pengadaan->user_id !== $currentUser->id) {
+            Alert::error('Akses Ditolak', 'Anda tidak memiliki akses untuk mengedit data ini');
+            return redirect('/permintaan');
+        }
+
         return view('permintaan.edit', [
-            'users'             => Auth::user(),
-            'status'            => Statuspengadaan::findOrFail($id),
+            'users'             => $currentUser,
+            'status'            => $statusData,
         ]);
     }
 
@@ -78,6 +108,16 @@ class StatusPengadaanController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $statusData = Statuspengadaan::findOrFail($id);
+        $pengadaan = Pengadaan::find($statusData->pengadaan_id);
+        $currentUser = Auth::user();
+
+        // Cek otorisasi: hanya user pemilik atau admin yang bisa update
+        if ($currentUser->roles !== 'admin' && $pengadaan->user_id !== $currentUser->id) {
+            Alert::error('Akses Ditolak', 'Anda tidak memiliki akses untuk mengubah data ini');
+            return redirect('/permintaan');
+        }
+
         Statuspengadaan::where('id', $id)
         ->update([
             'catatan'  => $request->catatan,
@@ -130,12 +170,21 @@ class StatusPengadaanController extends Controller
 
     public function cetakPengadaanBarang($id)
     {
+        $pengadaan = Pengadaan::find($id);
+        $currentUser = Auth::user();
+
+        // Cek otorisasi: hanya user pemilik atau admin yang bisa print
+        if ($currentUser->roles !== 'admin' && $pengadaan->user_id !== $currentUser->id) {
+            Alert::error('Akses Ditolak', 'Anda tidak memiliki akses untuk mencetak data ini');
+            return redirect('/permintaan');
+        }
+
         $logoInstansiPath = storage_path('app/public/logo-instansi/logo.png');
         $logoInstansi = base64_encode(file_get_contents($logoInstansiPath));
 
         $pdf = new Dompdf();
         $pdf = PDF::loadView('permintaan.laporan-pengadaan', [
-            'pengadaan'         => Pengadaan::find($id),
+            'pengadaan'         => $pengadaan,
             'status'            => Statuspengadaan::find($id),
             'logoInstansi'      => $logoInstansi,
         ]);

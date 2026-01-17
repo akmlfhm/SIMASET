@@ -18,24 +18,35 @@ class PengadaanController extends Controller
      */
     public function index()
     {
+        $query = Pengadaan::leftJoinSub(
+                            DB::table('statuspengadaans')
+                                ->select('pengadaan_id', DB::raw('MAX(created_at) as latest_created_at'))
+                                ->groupBy('pengadaan_id'),
+                            'latest_status',
+                            function ($join) {
+                                $join->on('pengadaans.id', '=', 'latest_status.pengadaan_id');
+                            }
+                        )
+                            ->leftJoin('statuspengadaans', function ($join) {
+                                $join->on('latest_status.pengadaan_id', '=', 'statuspengadaans.pengadaan_id')
+                                    ->on('latest_status.latest_created_at', '=', 'statuspengadaans.created_at');
+                            })
+                            ->select('pengadaans.*', 'statuspengadaans.status');
+
+        $currentUser = Auth::user();
+        
+        // Filter berdasarkan role user
+        if ($currentUser->roles !== 'admin') {
+            // Jika user bukan admin, hanya tampilkan data milik mereka sendiri
+            $query->where('pengadaans.user_id', $currentUser->id);
+        }
+        // Jika admin, tampilkan semua data
+
+        $pengadaans = $query->orderBy('created_at', 'desc')->get();
+
         return view('pengadaan.index', [
-            'users'      => Auth::user(),
-            'pengadaans' => Pengadaan::leftJoinSub(
-                                DB::table('statuspengadaans')
-                                    ->select('pengadaan_id', DB::raw('MAX(created_at) as latest_created_at'))
-                                    ->groupBy('pengadaan_id'),
-                                'latest_status',
-                                function ($join) {
-                                    $join->on('pengadaans.id', '=', 'latest_status.pengadaan_id');
-                                }
-                            )
-                                ->leftJoin('statuspengadaans', function ($join) {
-                                    $join->on('latest_status.pengadaan_id', '=', 'statuspengadaans.pengadaan_id')
-                                        ->on('latest_status.latest_created_at', '=', 'statuspengadaans.created_at');
-                                })
-                                ->select('pengadaans.*', 'statuspengadaans.status')
-                                ->orderBy('created_at', 'desc')
-                                ->get()
+            'users'      => $currentUser,
+            'pengadaans' => $pengadaans
         ]);
     }
 
@@ -82,9 +93,18 @@ class PengadaanController extends Controller
      */
     public function show($id)
     {
+        $pengadaan = Pengadaan::find($id);
+        $currentUser = Auth::user();
+
+        // Cek otorisasi: hanya user pemilik atau admin yang bisa melihat
+        if ($currentUser->roles !== 'admin' && $pengadaan->user_id !== $currentUser->id) {
+            Alert::error('Akses Ditolak', 'Anda tidak memiliki akses untuk melihat data ini');
+            return redirect('/pengadaan');
+        }
+
         return view('pengadaan.show', [
-            'users'     => Auth::user(),
-            'pengadaan' => Pengadaan::find($id),
+            'users'     => $currentUser,
+            'pengadaan' => $pengadaan,
             'status'    => Statuspengadaan::find($id)
         ]);
     }
@@ -94,8 +114,16 @@ class PengadaanController extends Controller
      */
     public function edit(Pengadaan $pengadaan)
     {
+        $currentUser = Auth::user();
+
+        // Cek otorisasi: hanya user pemilik atau admin yang bisa edit
+        if ($currentUser->roles !== 'admin' && $pengadaan->user_id !== $currentUser->id) {
+            Alert::error('Akses Ditolak', 'Anda tidak memiliki akses untuk mengedit data ini');
+            return redirect('/pengadaan');
+        }
+
         return view('pengadaan.edit', [
-            'users'     => Auth::user(),
+            'users'     => $currentUser,
             'pengadaan' => $pengadaan,
             'lokasis'   => Lokasi::all(),
         ]);
@@ -106,6 +134,14 @@ class PengadaanController extends Controller
      */
     public function update(Request $request, Pengadaan $pengadaan)
     {
+        $currentUser = Auth::user();
+
+        // Cek otorisasi: hanya user pemilik atau admin yang bisa update
+        if ($currentUser->roles !== 'admin' && $pengadaan->user_id !== $currentUser->id) {
+            Alert::error('Akses Ditolak', 'Anda tidak memiliki akses untuk mengubah data ini');
+            return redirect('/pengadaan');
+        }
+
         $rules = [
             'nama_pengadaan'    => 'required',
             'quantity'          => 'required|numeric',
@@ -136,6 +172,14 @@ class PengadaanController extends Controller
      */
     public function destroy(Pengadaan $pengadaan)
     {
+        $currentUser = Auth::user();
+
+        // Cek otorisasi: hanya user pemilik atau admin yang bisa delete
+        if ($currentUser->roles !== 'admin' && $pengadaan->user_id !== $currentUser->id) {
+            Alert::error('Akses Ditolak', 'Anda tidak memiliki akses untuk menghapus data ini');
+            return redirect('/pengadaan');
+        }
+
         $pengadaan->delete();
         Statuspengadaan::where('pengadaan_id', $pengadaan->id)->delete();
 
