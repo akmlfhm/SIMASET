@@ -76,7 +76,7 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="satuan" class="form-label">Lokasi</label>
+                                <label for="satuan" class="form-label">Satuan</label>
                                 <select class="form-select" aria-label="Default select example" id="satuan" name="satuan_id">
                                     @foreach ($satuans as $satuan)
                                         @if (old('satuan_id') == $satuan->id)

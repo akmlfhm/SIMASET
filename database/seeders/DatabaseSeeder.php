@@ -37,6 +37,13 @@ class DatabaseSeeder extends Seeder
             'roles'     => 'user'
         ]);
 
+                User::create([
+            'name'      => 'Muh.Akmal Fahim',
+            'email'     => 'akmlfhm@gmail.com',
+            'password'  => bcrypt('1234'),
+            'roles'     => 'user'
+        ]);
+
         Kategori::create([
             'nama'      => 'Elektronik',
             'deskripsi' => 'Deskripsi dari kategori elektronik',
@@ -44,9 +51,15 @@ class DatabaseSeeder extends Seeder
         ]);
 
 
-        Kategori::create([
+       Kategori::create([
             'nama'      => 'Mable', 
-            'deskripsi' => 'Deskripsi dari kategori mable/furniture',
+            'deskripsi' => 'Deskripsi dari kategori mable',
+            'user_id'   => 1
+        ]); 
+
+               Kategori::create([
+            'nama'      => 'Furniture', 
+            'deskripsi' => 'Deskripsi dari kategori furniture',
             'user_id'   => 1
         ]);
 
@@ -55,10 +68,22 @@ class DatabaseSeeder extends Seeder
             'deskripsi'     => 'Unit Usaha Perdagangan',
             'user_id'       => 1
         ]);
+
+                Lokasi::create([
+            'nama_lokasi'   => 'Ruang Rapat',
+            'deskripsi'     => 'Ruang Rapat',
+            'user_id'       => 1
+        ]);
         
         Satuan::create([
             'nama'      => 'Unit',
             'deskripsi' => 'Deskripsi dari satuan unit',
+            'user_id'   => 1
+        ]);
+
+                Satuan::create([
+            'nama'      => 'Buah',
+            'deskripsi' => 'Deskripsi dari satuan buah',
             'user_id'   => 1
         ]);
     }
