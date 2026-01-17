@@ -17,7 +17,7 @@ class StatistikController extends Controller
     {
         $userLogin = auth()->user()->roles;
 
-        if($userLogin == 'kepalausaha'){
+        if($userLogin == 'user'){
             $barang = Barang::selectRaw('YEAR(tanggal) as tahun, COUNT(*) as total')
                         ->where('user_id', auth()->user()->id)
                         ->groupBy('tahun')
@@ -58,7 +58,7 @@ class StatistikController extends Controller
 
 
         // Total Harga Statistik
-        if($userLogin == 'kepalausaha'){
+        if($userLogin == 'user'){
             $totalHarga = DB::table('barangs')
                 ->selectRaw('YEAR(tanggal) AS tahun, SUM(harga) AS totalHarga')
                 ->where('user_id', auth()->user()->id)

@@ -3,7 +3,7 @@
 @section('content')
     <a class="btn btn-primary float-end" href="/barang/create" role="button"><i class="bi bi-collection"></i> Tambah Barang</a>
 
-    @if(auth()->user()->roles === 'kepalausaha')
+    @if(auth()->user()->roles === 'user')
         <h1 class="h3 mb-4">Data Barang {{ auth()->user()->lokasi->nama_lokasi }}</h1>
     @else
         <h1 class="h3 mb-4">Data Barang {{ auth()->user()->roles}}</h1>

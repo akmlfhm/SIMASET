@@ -39,8 +39,8 @@
 
 				
 				<ul class="sidebar-nav">
-					{{-- Menu untuk roles sekretaris --}}
-					@if($users->roles === 'sekretaris');
+					{{-- Menu untuk roles admin --}}
+					@if($users->roles === 'admin');
 					<li class="sidebar-item">
 						<a class="sidebar-link" href="/home">
 							<i class="bi bi-speedometer2"></i> <span class="align-middle">Dashboard</span>
@@ -129,80 +129,8 @@
 					@endif
 
 
-					{{-- Menu untuk roles Direktur --}}
-					@if($users->roles === 'direktur');
-					<li class="sidebar-item">
-						<a class="sidebar-link" href="/home">
-							<i class="bi bi-speedometer2"></i> <span class="align-middle">Dashboard</span>
-						</a>
-					</li>
-
-					<li class="sidebar-header">
-						Data Master
-					</li>
-					<li class="sidebar-item">
-						<a class="sidebar-link" href="/barang/">
-							<i class="bi bi-collection"></i> <span class="align-middle">Data Barang</span>
-						</a>
-					</li>
-					<li class="sidebar-item">
-						<a class="sidebar-link" href="/kategori/">
-							<i class="bi bi-tags"></i> <span class="align-middle">Kategori</span>
-						</a>
-					</li>
-					<li class="sidebar-item">
-						<a class="sidebar-link" href="/lokasi/">
-							<i class="bi bi-geo-alt"></i> <span class="align-middle">Lokasi</span>
-						</a>
-					</li>
-					<li class="sidebar-item">
-						<a class="sidebar-link" href="/satuan/">
-							<i class="bi bi-hdd-stack"></i><span class="align-middle">Satuan</span>
-						</a>
-					</li>
-
-					<li class="sidebar-header">
-					Laporan
-				</li>
-				<li class="sidebar-item">
-					<a class="sidebar-link" href="/statistik/">
-						<i class="bi bi-clipboard-data"></i> <span class="align-middle">Statistik</span>
-					</a>
-				</li>
-				<li class="sidebar-item">
-					<a class="sidebar-link" href="/laporan/">
-						<i class="bi bi-journals"></i> <span class="align-middle">Cetak Laporan</span>
-					</a>
-				</li>
-				<li class="sidebar-item">
-					<a class="sidebar-link" href="/label/">
-						<i class="bi bi-qr-code"></i> <span class="align-middle">Cetak Label</span>
-					</a>
-				</li>
-
-				<li class="sidebar-header">
-					Riwayat
-				</li>
-				<li class="sidebar-item">
-					<a class="sidebar-link" href="/penghapusan-aset/">
-						<i class="bi bi-clock-history"></i> <span class="align-middle">Penghapusan Aset</span>
-					</a>
-				</li>
-
-				<li class="sidebar-header">
-					Pengaturan
-				</li>
-				<li class="sidebar-item">
-					<a class="sidebar-link" href="/reset-password/">
-						<i class="bi bi-unlock"></i> <span class="align-middle">Reset Password</span>
-					</a>
-				</li>
-
-				@endif
-
-
-				{{-- Menu untuk roles Kepala Unit Usaha --}}
-				@if($users->roles === 'kepalausaha');
+					{{-- Menu untuk roles Kepala Unit Usaha --}}
+					@if($users->roles === 'user');
 				<li class="sidebar-item">
 						<a class="sidebar-link" href="/home">
 							<i class="bi bi-speedometer2"></i> <span class="align-middle">Dashboard</span>

@@ -27,7 +27,7 @@ class BarangController extends Controller
     {
         $userLogin = auth()->user()->roles;
 
-        if($userLogin == 'kepalausaha'){
+        if($userLogin == 'user'){
             $barangs = Barang::where('user_id', auth()->user()->id)->get();
         } else {
             $barangs = Barang::all();

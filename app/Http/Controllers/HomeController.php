@@ -31,7 +31,7 @@ class HomeController extends Controller
     {
         $userLogin = auth()->user()->roles;
 
-        if($userLogin == 'kepalausaha'){
+        if($userLogin == 'user'){
             $barang = Barang::selectRaw('YEAR(tanggal) as tahun, COUNT(*) as total')
                         ->where('user_id', auth()->user()->id)
                         ->groupBy('tahun')

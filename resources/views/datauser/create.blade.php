@@ -54,8 +54,8 @@
                                 <label for="roles" class="form-label">Jabatan</label>
                                 <select class="form-select @error('roles') is-invalid @enderror" aria-label="Default select example" name="roles" id="roles">
                                     <option selected>Pilih Jabatan</option>
-                                    <option value="kepalausaha">Kepala Usaha</option>
-                                    <option value="direktur">Direktur</option>
+                                    <option value="admin">Admin</option>
+                                    <option value="user">User</option>
                                 </select>
                                 @error('roles')
                                     <div class="invalid-feedback">
@@ -108,7 +108,7 @@
     lokasi_id.style.display = "none";
 
     roles.addEventListener("change", function(){
-        if(roles.value === "kepalausaha"){
+        if(roles.value === "user"){
             lokasiLabel.style.display = "block";
             lokasi_id.style.display = "block";
         } else {

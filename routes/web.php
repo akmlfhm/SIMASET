@@ -60,23 +60,27 @@ Route::get('/reset-password', [ResetPasswordController::class, 'index']);
 Route::put('/reset-password', [ResetPasswordController::class, 'resetPassword']);
 Route::get('barang/label/{id}', [BarangController::class, 'cetakLabel']);
 
-Route::middleware(['auth', 'checkRole:sekretaris,kepalausaha'])->group(function(){
+Route::middleware(['auth', 'checkRole:admin,user'])->group(function(){
     Route::resource('/permintaan', StatusPengadaanController::class);
     Route::get('permintaan/laporan-pengadaan/{id}', [StatusPengadaanController::class, 'cetakPengadaanBarang']);
 });
 
-Route::middleware(['auth', 'checkRole:sekretaris'])->group(function(){
+Route::middleware(['auth', 'checkRole:admin'])->group(function(){
     Route::put('/permintaan/{id}/setuju', [StatusPengadaanController::class, 'setPersetujuan'])->name('permintaan.setuju');
     Route::put('/permintaan/{id}/tolak', [StatusPengadaanController::class, 'setPenolakan'])->name('permintaan.tolak');
 });
 
-Route::group(['middleware' => ['auth', 'sekretaris']], function(){
+Route::group(['middleware' => ['auth', 'admin']], function(){
     Route::resource('/datauser', DataUserController::class);
 });
 
-Route::group(['middleware' => ['auth', 'kepalausaha']], function(){
+Route::group(['middleware' => ['auth', 'user']], function(){
     Route::resource('/pengadaan', PengadaanController::class);
 });
+
+// Temporary route untuk verifikasi restrukturisasi role
+Route::get('/verify-restructure', [App\Http\Controllers\VerifyRestructureController::class, 'checkUsers']);
+
 
 
 

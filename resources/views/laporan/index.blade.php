@@ -2,7 +2,7 @@
 
 
 @section('content')
-    @if(auth()->user()->roles === 'kepalausaha')
+    @if(auth()->user()->roles === 'user')
         <h1 class="h3 mb-4">Cetak Laporan {{ auth()->user()->lokasi->nama_lokasi }}</h1>
     @else
         <h1 class="h3 mb-4">Cetak Laporan {{ auth()->user()->roles}}</h1>

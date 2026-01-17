@@ -92,7 +92,7 @@
     var roles = document.getElementById('roles');
     var lokasi_id = document.getElementById('lokasi');
 
-    if(roles.value === "kepalausaha"){
+    if(roles.value === "user"){
         lokasiLabel.style.display = "block";
         lokasi_id.style.display = "block";
     } else {
@@ -101,7 +101,7 @@
     }
 
     roles.addEventListener("change", function(){
-        if(roles.value === "kepalausaha"){
+        if(roles.value === "user"){
             lokasiLabel.style.display = "block";
             lokasi_id.style.display = "block";
         } else {

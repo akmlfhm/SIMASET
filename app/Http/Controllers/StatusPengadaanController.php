@@ -97,9 +97,9 @@ class StatusPengadaanController extends Controller
 
     public function setPersetujuan($id)
     {
-        // Validasi role sekretaris
-        if(auth()->user()->roles !== 'sekretaris'){
-            abort(403, 'Hanya Sekretaris yang dapat menyetujui pengadaan.');
+        // Validasi role admin
+        if(auth()->user()->roles !== 'admin'){
+            abort(403, 'Hanya Admin yang dapat menyetujui pengadaan.');
         }
 
         Statuspengadaan::where('id', $id)
@@ -112,10 +112,10 @@ class StatusPengadaanController extends Controller
     }
 
     public function setPenolakan($id)
-    { 
-        // Validasi role sekretaris
-        if(auth()->user()->roles !== 'sekretaris'){
-            abort(403, 'Hanya Sekretaris yang dapat menolak pengadaan.');
+    {
+        // Validasi role admin
+        if(auth()->user()->roles !== 'admin'){
+            abort(403, 'Hanya Admin yang dapat menolak pengadaan.');
         }
 
         Statuspengadaan::where('id', $id)
@@ -123,6 +123,7 @@ class StatusPengadaanController extends Controller
                 'status' => 'ditolak',
                 'user_id' => Auth::id()
             ]);
+
         Alert::success('Berhasil', 'Pengadaan Barang Ditolak');
         return redirect()->back()->with('success', 'Penolakan berhasil disimpan.');
     }

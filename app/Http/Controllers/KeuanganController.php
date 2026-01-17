@@ -19,7 +19,7 @@ class KeuanganController extends Controller
     {
         $userLogin = auth()->user()->roles;
 
-        if($userLogin == 'kepalausaha'){
+        if($userLogin == 'user'){
             $hargaBarangs = Barang::where('user_id', auth()->user()->id)->get();
         } else {
             $hargaBarangs = Barang::all();
@@ -87,7 +87,7 @@ class KeuanganController extends Controller
         // periksa role user yang sedang login
         $userLogin = auth()->user()->roles;
 
-        if($userLogin == 'kepalausaha'){
+        if($userLogin == 'user'){
             $hargaBarangs = Barang::where('user_id', auth()->user()->id)->get();
         } else {
             $hargaBarangs = Barang::all();

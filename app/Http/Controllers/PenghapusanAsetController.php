@@ -18,7 +18,7 @@ class PenghapusanAsetController extends Controller
     {
         $userLogin = auth()->user()->roles;
 
-        if($userLogin == 'kepalausaha'){
+        if($userLogin == 'user'){
             $deletedBarangs = Barang::onlyTrashed()->where('user_id', auth()->user()->id)->get();
         }else{
             $deletedBarangs = Barang::onlyTrashed()->get();

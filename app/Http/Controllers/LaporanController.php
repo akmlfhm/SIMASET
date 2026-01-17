@@ -26,7 +26,7 @@ class LaporanController extends Controller
         $selesai = $request->input('tgl_selesai');
 
 
-        if($userLogin == 'kepalausaha'){
+        if($userLogin == 'user'){
             $userId = auth()->user()->id;
 
             $laporans = Barang::where('user_id', $userId)
@@ -44,7 +44,7 @@ class LaporanController extends Controller
         } 
 
         if(!$mulai && !$selesai){
-            if($userLogin == 'kepalausaha'){
+            if($userLogin == 'user'){
                 $laporans = Barang::where('user_id', auth()->user()->id)->get();
             } else {
                 $laporans = Barang::all();
@@ -114,7 +114,7 @@ class LaporanController extends Controller
     $selesai = $request->input('tgl_selesai');
 
     // 1. Ambil data laporan dengan filter yang sudah ada
-    if($userLogin === 'kepalausaha'){
+    if($userLogin === 'user'){
         $laporans = Barang::where('user_id', $userId)
             ->when($mulai && $selesai, function ($query) use ($mulai, $selesai) {
                 return $query->whereBetween('tanggal', [$mulai, $selesai]);

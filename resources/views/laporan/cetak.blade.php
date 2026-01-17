@@ -66,7 +66,7 @@
 
         <div class="report-title">
             <strong>
-                @if(auth()->user()->roles === 'kepalausaha')
+                @if(auth()->user()->roles === 'user')
                     Laporan Data Aset {{ auth()->user()->lokasi->nama_lokasi }} Tahun {{ date('Y') }}
                 @else
                     Laporan Data Aset Seluruh Unit Tahun {{ date('Y') }}
@@ -108,7 +108,7 @@
                     <td colspan="6"><strong>Total Harga</strong></td>
                     <td class="text-right">
                         <strong>
-                            @if(auth()->user()->roles == 'kepalausaha')
+                            @if(auth()->user()->roles == 'user')
                                 Rp. {{ number_format($totalHargaUsaha, 0, ',', '.') }}
                             @else
                                 Rp. {{ number_format($totalHarga, 0, ',', '.') }}

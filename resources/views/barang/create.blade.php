@@ -6,7 +6,7 @@
     <div class="col-md-10 mx-auto">
         <a class="btn btn-secondary float-end" href="/barang/" role="button"><i class="bi bi-arrow-left"></i> Kembali</a>
         <h1 class="h3 mb-4">
-            @if(auth()->user()->roles === 'kepalausaha')
+            @if(auth()->user()->roles === 'user')
                 <h1 class="h3 mb-4">Tambah Barang Baru Di {{ auth()->user()->lokasi->nama_lokasi }}</h1>
             @else
                 <h1 class="h3 mb-4">Tambah Barang Untuk {{ auth()->user()->roles}}</h1>

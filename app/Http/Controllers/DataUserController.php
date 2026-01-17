@@ -44,7 +44,7 @@ class DataUserController extends Controller
             'email'     => 'required',
             'password'  => 'required',
             'roles'     => 'required',
-            'lokasi_id' => $request->roles == 'kepalausaha' ? 'required' : ''
+            'lokasi_id' => $request->roles == 'user' ? 'required' : ''
         ]);
 
         $validated['password'] = bcrypt($validated['password']);
@@ -82,8 +82,8 @@ class DataUserController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|max:255',
             'email' => 'required|unique:users,email,'.$id,
-            'roles' => 'required|in:sekretaris,direktur,kepalausaha',
-            'lokasi_id' => 'nullable|'.($request->input('roles') == 'kepalausaha' ? 'required' : 'nullable').'|exists:lokasis,id',
+            'roles' => 'required|in:admin,user',
+            'lokasi_id' => 'nullable|'.($request->input('roles') == 'user' ? 'required' : 'nullable').'|exists:lokasis,id',
         ]);
     
         $user = User::findOrFail($id);
@@ -91,7 +91,7 @@ class DataUserController extends Controller
         $user->email = $validatedData['email'];
         $user->roles = $validatedData['roles'];
     
-        if ($user->roles === 'kepalausaha') {
+        if ($user->roles === 'user') {
             $validatedData['lokasi_id'] = $request->input('lokasi_id');
             $user->lokasi_id = $validatedData['lokasi_id'];
         }
