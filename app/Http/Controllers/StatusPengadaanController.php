@@ -179,6 +179,16 @@ class StatusPengadaanController extends Controller
             return redirect('/permintaan');
         }
 
+        // Cek keamanan: user hanya bisa cetak jika status sudah disetujui atau ditolak
+        $latestStatus = Statuspengadaan::where('pengadaan_id', $id)
+            ->orderBy('created_at', 'desc')
+            ->first();
+        
+        if ($latestStatus && $latestStatus->status === 'pending') {
+            Alert::error('Akses Ditolak', 'Anda tidak dapat mencetak pengajuan dengan status pending. Tunggu sampai admin melakukan verifikasi.');
+            return redirect('/pengadaan');
+        }
+
         $logoInstansiPath = storage_path('app/public/logo-instansi/logo.png');
         $logoInstansi = base64_encode(file_get_contents($logoInstansiPath));
 

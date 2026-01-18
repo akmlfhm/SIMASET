@@ -42,9 +42,11 @@
                                                 <div class="btn btn-danger mb-2 swal-confirm" data-form="{{ $pengadaan->id }}"><i class="bi bi-trash-fill"></i></div>
                                             </form>
                                             @if (auth()->user()->roles === 'user')
-                                                <a class="btn btn-primary mb-2" href="/permintaan/laporan-pengadaan/{{ $pengadaan->id }}" target="_blank" role="button">
-                                                    <i class="bi bi-printer"></i>&nbsp; Cetak
-                                                </a>
+                                                @if (in_array($pengadaan->status, ['disetujui', 'ditolak']))
+                                                    <a class="btn btn-primary mb-2" href="/permintaan/laporan-pengadaan/{{ $pengadaan->id }}" target="_blank" role="button">
+                                                        <i class="bi bi-printer"></i>&nbsp; Cetak
+                                                    </a>
+                                                @endif
                                             @endif
                                         </td>
                                     </tr>  
