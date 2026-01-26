@@ -58,13 +58,14 @@ class BarangController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nama'          => 'required',
-            'deskripsi'     => 'required',
-            'gambar'        => 'required|mimes:jpeg,png,jpg',
-            'harga'         => 'required|numeric',
-            'kategori_id'   => 'required',
-            'lokasi_id'     => 'required',
-            'satuan_id'     => 'required'
+            'nama'              => 'required',
+            'deskripsi'         => 'required',
+            'gambar'            => 'required|mimes:jpeg,png,jpg',
+            'harga'             => 'required|numeric',
+            'tahun_pembelian'   => 'required|numeric|digits:4|min:1900',
+            'kategori_id'       => 'required',
+            'lokasi_id'         => 'required',
+            'satuan_id'         => 'required'
         ]);
 
         if ($request->hasFile('gambar')) {
@@ -74,32 +75,37 @@ class BarangController extends Controller
             $validated['gambar'] = 'gambar-barang/'.$fileName;
         }
               
-        // Generate unique code
-        // $validated['kode_barang'] = 'MS-' . uniqid();
-        // $lastCode = Barang::max('kode_barang');
-        // $codeNumber = intval(substr($lastCode, 3)) + 1;
-        // $validated['kode_barang'] = 'MS' . str_pad($codeNumber, 5, '0', STR_PAD_LEFT);
-        // 1. Ambil tahun saat ini
-$tahunSekarang = date('Y');
+        // Generate unique code based on kategori only
+        $kategoriId = $validated['kategori_id'];
+        $tahunPembelian = (int)$validated['tahun_pembelian'];
 
-// 2. Cari data terakhir yang kodenya mengandung tahun ini
-$lastBarang = Barang::where('kode_barang', 'LIKE', "%-$tahunSekarang")
-                    ->orderBy('id', 'desc')
-                    ->first();
+        // Get the category code
+        $kategori = Kategori::find($kategoriId);
+        if (!$kategori || !$kategori->kode_kategori) {
+            Alert::error('Error', 'Kategori tidak ditemukan atau tidak memiliki kode kategori');
+            return redirect()->back();
+        }
 
-if (!$lastBarang) {
-    // Jika belum ada data di tahun ini, mulai dari 1
-    $nomorUrut = 1;
-} else {
-    // Ambil kode terakhir (PWM-001-2025), pecah berdasarkan tanda strip (-)
-    $segments = explode('-', $lastBarang->kode_barang);
-    
-    // Ambil angka urut di posisi tengah (index 1), lalu tambah 1
-    $nomorUrut = intval($segments[1]) + 1;
-}
+        $kodeKategori = $kategori->kode_kategori;
 
-// 3. Susun formatnya: PWM - (nomor urut 3 digit) - (tahun)
-$validated['kode_barang'] = 'PWM-' . str_pad($nomorUrut, 3, '0', STR_PAD_LEFT) . '-' . $tahunSekarang;
+        // Cari data terakhir berdasarkan kategori SAJA (tidak peduli tahun)
+        $lastBarang = Barang::where('kategori_id', $kategoriId)
+                            ->orderBy('id', 'desc')
+                            ->first();
+
+        if (!$lastBarang) {
+            // Jika belum ada data untuk kategori ini, mulai dari 1
+            $nomorUrut = 1;
+        } else {
+            // Ambil kode terakhir (PWM-E-003-2025), pecah berdasarkan tanda strip (-)
+            $segments = explode('-', $lastBarang->kode_barang);
+            
+            // Ambil angka urut di posisi ketiga (index 2), lalu tambah 1
+            $nomorUrut = intval($segments[2]) + 1;
+        }
+
+        // Susun formatnya: PWM - {KODE_KATEGORI} - (nomor urut 3 digit) - (tahun pembelian)
+        $validated['kode_barang'] = 'PWM-' . $kodeKategori . '-' . str_pad($nomorUrut, 3, '0', STR_PAD_LEFT) . '-' . $tahunPembelian;
 
         $qrCode = new QrCode($validated['kode_barang']);
         $writer = new PngWriter();
@@ -148,13 +154,14 @@ $validated['kode_barang'] = 'PWM-' . str_pad($nomorUrut, 3, '0', STR_PAD_LEFT) .
     public function update(Request $request, Barang $barang)
     {
         $rules = [
-            'nama'          => 'required',
-            'deskripsi'     => 'required',
-            'gambar'        => 'image|file',
-            'harga'         => 'required|numeric',
-            'kategori_id'   => 'required',
-            'lokasi_id'     => 'required',
-            'satuan_id'     => 'required'
+            'nama'              => 'required',
+            'deskripsi'         => 'required',
+            'gambar'            => 'image|file',
+            'harga'             => 'required|numeric',
+            'tahun_pembelian'   => 'required|numeric|digits:4|min:1900',
+            'kategori_id'       => 'required',
+            'lokasi_id'         => 'required',
+            'satuan_id'         => 'required'
         ];
 
         $validated = $request->validate($rules);
@@ -167,6 +174,42 @@ $validated['kode_barang'] = 'PWM-' . str_pad($nomorUrut, 3, '0', STR_PAD_LEFT) .
             $fileName = $file->getClientOriginalName();
             Storage::disk('public')->put('gambar-barang/' .$fileName, file_get_contents($file));
             $validated['gambar'] = 'gambar-barang/' .$fileName;
+        }
+
+        // Regenerate code if kategori berubah
+        if ($barang->kategori_id !== (int)$validated['kategori_id']) {
+            $kategoriId = $validated['kategori_id'];
+            $tahunPembelian = (int)$validated['tahun_pembelian'];
+
+            // Get the category code
+            $kategori = Kategori::find($kategoriId);
+            if (!$kategori || !$kategori->kode_kategori) {
+                Alert::error('Error', 'Kategori tidak ditemukan atau tidak memiliki kode kategori');
+                return redirect()->back();
+            }
+
+            $kodeKategori = $kategori->kode_kategori;
+
+            // Cari data terakhir berdasarkan kategori SAJA (tidak peduli tahun)
+            // Exclude current item
+            $lastBarang = Barang::where('kategori_id', $kategoriId)
+                                ->where('id', '!=', $barang->id)
+                                ->orderBy('id', 'desc')
+                                ->first();
+
+            if (!$lastBarang) {
+                // Jika belum ada data untuk kategori ini, mulai dari 1
+                $nomorUrut = 1;
+            } else {
+                // Ambil kode terakhir (PWM-E-003-2025), pecah berdasarkan tanda strip (-)
+                $segments = explode('-', $lastBarang->kode_barang);
+                
+                // Ambil angka urut di posisi ketiga (index 2), lalu tambah 1
+                $nomorUrut = intval($segments[2]) + 1;
+            }
+
+            // Susun formatnya: PWM - {KODE_KATEGORI} - (nomor urut 3 digit) - (tahun pembelian)
+            $validated['kode_barang'] = 'PWM-' . $kodeKategori . '-' . str_pad($nomorUrut, 3, '0', STR_PAD_LEFT) . '-' . $tahunPembelian;
         }
 
         $validated['user_id'] = auth()->user()->id;

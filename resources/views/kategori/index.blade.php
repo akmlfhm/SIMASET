@@ -15,6 +15,7 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Nama Kategori</th>
+                                    <th>Kode Kategori</th>
                                     <th>Deskripsi</th>
                                     <th>Opsi</th>
                                 </tr>
@@ -24,6 +25,7 @@
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $kategori->nama }}</td>
+                                        <td><strong>{{ $kategori->kode_kategori }}</strong></td>
                                         <td>{!! $kategori->deskripsi !!}</td>
                                         <td>  
                                             <a href="/kategori/{{ $kategori->id }}/edit" class="btn btn-warning  mb-2"><i class="bi bi-pencil-fill"></i></a>

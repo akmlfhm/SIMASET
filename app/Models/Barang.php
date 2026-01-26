@@ -16,7 +16,11 @@ class Barang extends Model
     use SoftDeletes;
 
     protected $dates = ['deleted_at'];
-    protected $fillable = ['kode_barang', 'gambar', 'nama', 'deskripsi', 'tanggal', 'harga', 'user_id', 'kategori_id', 'lokasi_id', 'satuan_id'];
+    protected $fillable = ['kode_barang', 'gambar', 'nama', 'deskripsi', 'tanggal', 'harga', 'tahun_pembelian', 'user_id', 'kategori_id', 'lokasi_id', 'satuan_id'];
+    protected $casts = [
+        'tahun_pembelian' => 'integer',
+        'harga' => 'double'
+    ];
 
     public function user()
     {

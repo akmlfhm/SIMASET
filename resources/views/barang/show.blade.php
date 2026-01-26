@@ -35,6 +35,11 @@
                                 <td>{{ $barang->kode_barang }}</td>
                             </tr>
                             <tr>
+                                <td><b>Tahun Pembelian</b></td>
+                                <td>:</td>
+                                <td>{{ $barang->tahun_pembelian }}</td>
+                            </tr>
+                            <tr>
                                 <td><b>Harga Pembelian</b></td>
                                 <td>:</td>
                                 <td>Rp. {{ $barang->harga }}</td>

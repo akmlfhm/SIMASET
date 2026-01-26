@@ -37,8 +37,9 @@ class KategoriController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nama'      => 'required',
-            'deskripsi' => 'required'
+            'nama'              => 'required',
+            'kode_kategori'     => 'required|unique:kategoris,kode_kategori|max:5',
+            'deskripsi'         => 'required'
         ]);
 
         $validated['user_id'] = auth()->user()->id;
@@ -73,8 +74,9 @@ class KategoriController extends Controller
     public function update(Request $request, Kategori $kategori)
     {
         $rules = [
-            'nama'      => 'required',
-            'deskripsi' => 'required',
+            'nama'              => 'required',
+            'kode_kategori'     => 'required|unique:kategoris,kode_kategori,' . $kategori->id . '|max:5',
+            'deskripsi'         => 'required',
         ];
 
         $validated = $request->validate($rules);

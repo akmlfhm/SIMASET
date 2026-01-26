@@ -27,6 +27,16 @@
                             </div>
 
                             <div class="mb-3">
+                                <label for="tahun_pembelian" class="form-label">Tahun Pembelian</label>
+                                <input type="number" class="form-control @error('tahun_pembelian') is-invalid @enderror" id="tahun_pembelian" name="tahun_pembelian" min="1900" value="{{ old('tahun_pembelian', date('Y')) }}">
+                                @error('tahun_pembelian')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+
+                            <div class="mb-3">
                                 <label for="nama" class="form-label">Nama Barang</label>
                                 <input type="text" class="form-control @error('nama') is-invalid @enderror" id="nama" name="nama">
                                 @error('nama')

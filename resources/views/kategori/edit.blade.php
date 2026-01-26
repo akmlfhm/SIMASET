@@ -26,6 +26,17 @@
                             </div>
 
                             <div class="mb-3">
+                                <label for="kode_kategori" class="form-label">Kode Kategori</label>
+                                <input type="text" class="form-control @error('kode_kategori') is-invalid @enderror" id="kode_kategori" name="kode_kategori" placeholder="Contoh: E, M, F, A" maxlength="5" value="{{ old('kode_kategori', $kategori->kode_kategori) }}">
+                                <small class="form-text text-muted">Kode unik untuk kategori (maksimal 5 karakter)</small>
+                                @error('kode_kategori')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+
+                            <div class="mb-3">
                                 <label for="deskripsi" class="form-label">Deskripsi</label>
                                 <textarea name="deskripsi" id="text" cols="30" rows="10">{{ old('deskripsi', $kategori->deskripsi) }}</textarea>
                                 @error('deskripsi')

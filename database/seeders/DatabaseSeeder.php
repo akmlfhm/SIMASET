@@ -45,27 +45,31 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Kategori::create([
-            'nama'      => 'Elektronik',
-            'deskripsi' => 'Deskripsi dari kategori elektronik',
-            'user_id'   => 1
+            'nama'              => 'Elektronik',
+            'kode_kategori'     => 'E',
+            'deskripsi'         => 'Deskripsi dari kategori elektronik',
+            'user_id'           => 1
         ]);
 
         Kategori::create([
-            'nama'      => 'Mable',
-            'deskripsi' => 'Kategori mable',
-            'user_id'   => 1
+            'nama'              => 'Mable',
+            'kode_kategori'     => 'M',
+            'deskripsi'         => 'Kategori mable',
+            'user_id'           => 1
         ]);
 
         Kategori::create([
-            'nama'      => 'Furniture',
-            'deskripsi' => 'Kategori furniture',
-            'user_id'   => 1
+            'nama'              => 'Furniture',
+            'kode_kategori'     => 'F',
+            'deskripsi'         => 'Kategori furniture',
+            'user_id'           => 1
         ]);
 
         Kategori::create([
-            'nama'      => 'Alat makan',
-            'deskripsi' => 'Kategori alat makan',
-            'user_id'   => 1
+            'nama'              => 'Alat makan',
+            'kode_kategori'     => 'A',
+            'deskripsi'         => 'Kategori alat makan',
+            'user_id'           => 1
         ]);
 
 
