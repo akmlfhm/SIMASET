@@ -7,7 +7,7 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-# Sistem Informasi Manajemen Aset Berbasis Web Untuk PWM (Badan Usaha Milik Desa)
+# Sistem Informasi Manajemen Aset Berbasis Web Untuk PWM 
 
 
 Sistem informasi manajemen aset biasanya diperlukan untuk memantau dan mengelola aset organisasi atau perusahaan. Tujuan utama dari sistem ini adalah untuk membantu organisasi dalam mengoptimalkan penggunaan aset mereka dan memastikan bahwa mereka beroperasi secara efektif dan efisien.
